@@ -58,10 +58,6 @@
 
 #import <pal/cocoa/WritingToolsUISoftLink.h>
 
-#if PLATFORM(VISION)
-asm(".linker_option \"-framework\", \"WritingTools\"");
-#endif
-
 #if PLATFORM(MAC)
 
 @interface NSMenu (Extras)
@@ -130,16 +126,6 @@ asm(".linker_option \"-framework\", \"WritingTools\"");
 
 @end
 #endif
-
-@interface WKWebViewConfiguration (Staging_135210076)
-
-#if PLATFORM(IOS_FAMILY)
-@property (nonatomic) UIWritingToolsBehavior writingToolsBehavior;
-#else
-@property (nonatomic) NSWritingToolsBehavior writingToolsBehavior;
-#endif
-
-@end
 
 #if PLATFORM(IOS_FAMILY)
 using PlatformTextPlaceholder = UITextPlaceholder;
@@ -3219,10 +3205,8 @@ TEST(WritingTools, SuggestedTextIsSelectedAfterSmartReply)
 
 #if PLATFORM(MAC)
         id<NSTextInputClient_Async> contentView = (id<NSTextInputClient_Async>)webView.get();
-#elif USE(BROWSERENGINEKIT)
-        id<BETextInput> contentView = [webView asyncTextInput];
 #else
-        id<UIWKInteractionViewProtocol> contentView = [webView textInputContentView];
+        id<BETextInput> contentView = [webView asyncTextInput];
 #endif
 
         [contentView insertTextPlaceholderWithSize:CGSizeMake(50, 100) completionHandler:^(PlatformTextPlaceholder *placeholder) {
